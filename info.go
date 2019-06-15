@@ -6,29 +6,34 @@ import (
 	"strings"
 )
 
+// Info represents details about the directory/package
 type Info struct {
-	Dir         string            `json:"Dir"`
-	ImportPath  string            `json:"ImportPath"`
-	Name        string            `json:"Name"`
-	Doc         string            `json:"Doc"`
-	Target      string            `json:"Target"`
-	Root        string            `json:"Root"`
-	Match       []string          `json:"Match"`
-	Stale       bool              `json:"Stale"`
-	StaleReason string            `json:"StaleReason"`
-	GoFiles     []string          `json:"GoFiles"`
-	Imports     []string          `json:"Imports"`
-	Deps        []string          `json:"Deps"`
-	TestGoFiles []string          `json:"TestGoFiles"`
-	TestImports []string          `json:"TestImports"`
-	Module      Module            `json:"Module"`
-	GoEnv       map[string]string `json:"GoEnv"`
+	Dir         string
+	ImportPath  string
+	Name        string
+	Doc         string
+	Target      string
+	Root        string
+	Match       []string
+	Stale       bool
+	StaleReason string
+	GoFiles     []string
+	Imports     []string
+	Deps        []string
+	TestGoFiles []string
+	TestImports []string
+	Module      Module
+	GoEnv       map[string]string // go env -json
 }
 
+// GoPath returns the GOPATH ENV var
 func (i Info) GoPath() string {
 	return i.Getenv("GOPATH")
 }
 
+// ModuleName returns the name of the current
+// module, or if not using modules, the current
+// package. These *might* not match.
 func (i Info) ModuleName() string {
 	if i.Mods() {
 		return i.Module.Path
@@ -36,6 +41,8 @@ func (i Info) ModuleName() string {
 	return i.ImportPath
 }
 
+// Getenv is a helper function to mimic
+// os.Getenv behavior.
 func (i Info) Getenv(k string) string {
 	if i.GoEnv == nil {
 		return ""
@@ -43,7 +50,8 @@ func (i Info) Getenv(k string) string {
 	return i.GoEnv[k]
 }
 
-func (i Info) EnvHas(k string) bool {
+// Has checks if the ENV variable is in the GoEnv
+func (i Info) Has(k string) bool {
 	if i.GoEnv == nil {
 		return false
 	}
@@ -51,10 +59,14 @@ func (i Info) EnvHas(k string) bool {
 	return ok
 }
 
+// IsZero checks if the type has been filled
+// with rich chocolately data goodness
 func (i Info) IsZero() bool {
 	return i.String() == Info{}.String()
 }
 
+// Mods returns whether Go modules are used
+// in this directory/package.
 func (i Info) Mods() bool {
 	return !i.Module.IsZero()
 }
