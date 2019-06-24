@@ -1,6 +1,7 @@
 package here
 
 import (
+	"bytes"
 	"encoding/json"
 	"os"
 	"os/exec"
@@ -15,13 +16,15 @@ func newInfo() Info {
 func run(n string, args ...string) ([]byte, error) {
 	c := exec.Command(n, args...)
 
+	bb := &bytes.Buffer{}
+	c.Stdout = bb
 	c.Stderr = os.Stderr
-	b, err := c.Output()
+	err := c.Run()
 	if err != nil {
-		return b, err
+		return nil, err
 	}
 
-	return b, err
+	return bb.Bytes(), nil
 }
 
 func setEnv(i *Info) error {
