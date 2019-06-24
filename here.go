@@ -2,6 +2,7 @@ package here
 
 import (
 	"encoding/json"
+	"os"
 	"os/exec"
 )
 
@@ -14,6 +15,7 @@ func newInfo() Info {
 func run(n string, args ...string) ([]byte, error) {
 	c := exec.Command(n, args...)
 
+	c.Stderr = os.Stderr
 	b, err := c.Output()
 	if err != nil {
 		return b, err
