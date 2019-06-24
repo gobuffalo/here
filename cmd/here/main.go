@@ -31,6 +31,6 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println(i)
+		fmt.Fprintln(os.Stdout, i.String())
 	}
 }
