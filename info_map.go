@@ -11,7 +11,7 @@ import (
 // key:   string
 // value: Info
 type infoMap struct {
-	data sync.Map
+	data *sync.Map
 }
 
 // Delete the key from the map

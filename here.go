@@ -5,7 +5,12 @@ import (
 	"encoding/json"
 	"os"
 	"os/exec"
+	"sync"
 )
+
+var cache = &infoMap{
+	data: &sync.Map{},
+}
 
 func newInfo() Info {
 	return Info{
@@ -35,5 +40,17 @@ func setEnv(i *Info) error {
 	}
 
 	return json.Unmarshal(b, &i.GoEnv)
+}
 
+func Cache(p string, fn func(string) (Info, error)) (Info, error) {
+	i, ok := cache.Load(p)
+	if ok {
+		return i, nil
+	}
+	i, err := fn(p)
+	if err != nil {
+		return i, err
+	}
+	cache.Store(p, i)
+	return i, nil
 }
