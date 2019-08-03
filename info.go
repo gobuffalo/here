@@ -99,7 +99,5 @@ func (i Info) String() string {
 		return err.Error()
 	}
 	s := string(b)
-	s = strings.ReplaceAll(s, os.Getenv("GOPATH"), "$GOPATH")
-	s = strings.ReplaceAll(s, os.Getenv("HOME"), "$HOME")
 	return s
 }
