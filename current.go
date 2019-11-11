@@ -4,6 +4,7 @@ import (
 	"path/filepath"
 )
 
+// Current returns the Info representing the current Go module
 func (h Here) Current() (Info, error) {
 	hp := &h
 	(&hp.curOnce).Do(func() {
