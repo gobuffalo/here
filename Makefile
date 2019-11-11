@@ -43,7 +43,6 @@ release-test:
 	make tidy
 
 release:
-	$(GO_BIN) get github.com/gobuffalo/release
 	make tidy
 	release -y -f version.go --skip-packr
 	make tidy

@@ -4,6 +4,11 @@
 
 Here will get you **accurate** Go information about the directory of package requested.
 
+### Requirements
+
+* Go 1.13+
+* Go Modules
+
 ## CLI
 
 While you can use the tool via its API, you can also use the CLI to get a JSON version of the data.

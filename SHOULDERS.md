@@ -4,3 +4,21 @@ github.com/gobuffalo/here does not try to reinvent the wheel! Instead, it uses t
 
 Thank you to the following **GIANTS**:
 
+
+* [github.com/davecgh/go-spew](https://godoc.org/github.com/davecgh/go-spew)
+
+* [github.com/kr/pretty](https://godoc.org/github.com/kr/pretty)
+
+* [github.com/kr/pty](https://godoc.org/github.com/kr/pty)
+
+* [github.com/kr/text](https://godoc.org/github.com/kr/text)
+
+* [github.com/pmezard/go-difflib](https://godoc.org/github.com/pmezard/go-difflib)
+
+* [github.com/stretchr/objx](https://godoc.org/github.com/stretchr/objx)
+
+* [github.com/stretchr/testify](https://godoc.org/github.com/stretchr/testify)
+
+* [gopkg.in/check.v1](https://godoc.org/gopkg.in/check.v1)
+
+* [gopkg.in/yaml.v2](https://godoc.org/gopkg.in/yaml.v2)
