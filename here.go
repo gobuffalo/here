@@ -2,19 +2,24 @@ package here
 
 import (
 	"bytes"
-	"encoding/json"
-	"os"
+	"fmt"
 	"os/exec"
+	"regexp"
 	"sync"
 )
 
-var cache = &infoMap{
-	data: &sync.Map{},
+type Here struct {
+	infos   *infoMap
+	curOnce sync.Once
+	curErr  error
+	current Info
 }
 
-func newInfo() Info {
-	return Info{
-		GoEnv: map[string]string{},
+func New() Here {
+	return Here{
+		infos: &infoMap{
+			data: &sync.Map{},
+		},
 	}
 }
 
@@ -23,27 +28,17 @@ func run(n string, args ...string) ([]byte, error) {
 
 	bb := &bytes.Buffer{}
 	c.Stdout = bb
-	c.Stderr = os.Stderr
+	c.Stderr = bb
 	err := c.Run()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("%w: %s", err, bb)
 	}
 
 	return bb.Bytes(), nil
 }
 
-func setEnv(i *Info) error {
-	i.GoEnv = map[string]string{}
-	b, err := run("go", "env", "-json")
-	if err != nil {
-		return err
-	}
-
-	return json.Unmarshal(b, &i.GoEnv)
-}
-
-func Cache(p string, fn func(string) (Info, error)) (Info, error) {
-	i, ok := cache.Load(p)
+func (h Here) cache(p string, fn func(string) (Info, error)) (Info, error) {
+	i, ok := h.infos.Load(p)
 	if ok {
 		return i, nil
 	}
@@ -51,6 +46,8 @@ func Cache(p string, fn func(string) (Info, error)) (Info, error) {
 	if err != nil {
 		return i, err
 	}
-	cache.Store(p, i)
+	h.infos.Store(p, i)
 	return i, nil
 }
+
+var nonGoDirRx = regexp.MustCompile(`cannot find main|go help modules|go: |build .:|no Go files`)

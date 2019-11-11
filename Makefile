@@ -1,33 +1,28 @@
 TAGS ?= ""
 GO_BIN ?= "go"
 
-install: 
-	$(GO_BIN) install -tags ${TAGS} -v ./cmd/here
+
+install: tidy
+	cd ./cmd/here && $(GO_BIN) install -tags ${TAGS} -v .
 	make tidy
 
 tidy:
-ifeq ($(GO111MODULE),on)
-	$(GO_BIN) mod tidy
-else
-	echo skipping go mod tidy
-endif
+	$(GO_BIN) mod tidy -v
 
-deps:
-	$(GO_BIN) get -tags ${TAGS} -t ./...
-	make tidy
-
-build: 
+build: tidy
 	$(GO_BIN) build -v .
 	make tidy
 
-test: 
-	$(GO_BIN) test -cover -tags ${TAGS} ./...
+test: tidy
+	$(GO_BIN) test -count 1 -cover -tags ${TAGS} -timeout 10s ./...
 	make tidy
 
-ci-deps: 
-	$(GO_BIN) get -tags ${TAGS} -t ./...
+cov:
+	$(GO_BIN) test -coverprofile cover.out -count 1 -tags ${TAGS} ./...
+	go tool cover -html cover.out
+	make tidy
 
-ci-test: 
+ci-test:
 	$(GO_BIN) test -tags ${TAGS} -race ./...
 
 lint:
@@ -36,18 +31,14 @@ lint:
 	make tidy
 
 update:
-ifeq ($(GO111MODULE),on)
 	rm go.*
 	$(GO_BIN) mod init
 	$(GO_BIN) mod tidy
-else
-	$(GO_BIN) get -u -tags ${TAGS}
-endif
 	make test
 	make install
 	make tidy
 
-release-test: 
+release-test:
 	$(GO_BIN) test -tags ${TAGS} -race ./...
 	make tidy
 
@@ -56,6 +47,5 @@ release:
 	make tidy
 	release -y -f version.go --skip-packr
 	make tidy
-
 
 

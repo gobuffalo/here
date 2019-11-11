@@ -1,12 +1,25 @@
 package here
 
-import "path/filepath"
+import (
+	"path/filepath"
+)
 
-var root = func() string {
-	b, _ := run("go", "env", "GOMOD")
-	return filepath.Dir(string(b))
-}()
+func (h Here) Current() (Info, error) {
+	hp := &h
+	(&hp.curOnce).Do(func() {
+		b, err := run("go", "env", "GOMOD")
+		if err != nil {
+			hp.curErr = err
+			return
+		}
+		root := filepath.Dir(string(b))
+		i, err := h.Dir(root)
+		if err != nil {
+			hp.curErr = err
+			return
+		}
+		hp.current = i
+	})
 
-func Current() (Info, error) {
-	return Dir(root)
+	return h.current, h.curErr
 }
