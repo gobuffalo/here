@@ -22,6 +22,8 @@ func (h Here) Package(p string) (Info, error) {
 		}
 		b, err := run("go", "list", "-json", "-find", p)
 		if err != nil {
+			fmt.Println(">>>TODO pkg.go:26: string(b) ", string(b))
+			fmt.Println(">>>TODO pkg.go:26: err ", err)
 			return i, err
 		}
 		if err := json.Unmarshal(b, &i); err != nil {

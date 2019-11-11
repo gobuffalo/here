@@ -34,17 +34,24 @@ $ here
   "Stale": true,
   "StaleReason": "not installed but available in build cache",
   "GoFiles": [
+    "current.go",
+    "dir.go",
     "here.go",
     "info.go",
+    "info_map.go",
     "module.go",
+    "pkg.go",
     "version.go"
   ],
   "Imports": [
+    "bytes",
     "encoding/json",
+    "fmt",
     "os",
     "os/exec",
     "path/filepath",
-    "strings"
+    "regexp",
+    "sync"
   ],
   "Deps": [
     "bytes",
@@ -58,8 +65,10 @@ $ here
     "internal/bytealg",
     "internal/cpu",
     "internal/fmtsort",
+    "internal/oserror",
     "internal/poll",
     "internal/race",
+    "internal/reflectlite",
     "internal/syscall/unix",
     "internal/testlog",
     "io",
@@ -69,6 +78,8 @@ $ here
     "os/exec",
     "path/filepath",
     "reflect",
+    "regexp",
+    "regexp/syntax",
     "runtime",
     "runtime/internal/atomic",
     "runtime/internal/math",
@@ -85,42 +96,26 @@ $ here
     "unicode/utf8",
     "unsafe"
   ],
-  "TestGoFiles": null,
-  "TestImports": null,
+  "TestGoFiles": [
+    "current_test.go",
+    "dir_test.go",
+    "here_test.go",
+    "info_test.go",
+    "module_test.go",
+    "pkg_test.go"
+  ],
+  "TestImports": [
+    "github.com/stretchr/testify/require",
+    "os",
+    "path/filepath",
+    "testing"
+  ],
   "Module": {
     "Path": "github.com/gobuffalo/here",
     "Main": true,
     "Dir": "$GOPATH/src/github.com/gobuffalo/here",
     "GoMod": "$GOPATH/src/github.com/gobuffalo/here/go.mod",
-    "GoVersion": "1.12"
-  },
-  "GoEnv": {
-    "CC": "clang",
-    "CGO_CFLAGS": "-g -O2",
-    "CGO_CPPFLAGS": "",
-    "CGO_CXXFLAGS": "-g -O2",
-    "CGO_ENABLED": "1",
-    "CGO_FFLAGS": "-g -O2",
-    "CGO_LDFLAGS": "-g -O2",
-    "CXX": "clang++",
-    "GCCGO": "gccgo",
-    "GOARCH": "amd64",
-    "GOBIN": "",
-    "GOCACHE": "$HOME/Library/Caches/go-build",
-    "GOEXE": "",
-    "GOFLAGS": "",
-    "GOGCCFLAGS": "-fPIC -m64 -pthread -fno-caret-diagnostics -Qunused-arguments -fmessage-length=0 -fdebug-prefix-map=/var/folders/zj/ktv0trrj4l79dfq0dkm1b6d40000gn/T/go-build762990333=/tmp/go-build -gno-record-gcc-switches -fno-common",
-    "GOHOSTARCH": "amd64",
-    "GOHOSTOS": "darwin",
-    "GOMOD": "$GOPATH/src/github.com/gobuffalo/here/go.mod",
-    "GOOS": "darwin",
-    "GOPATH": "$GOPATH",
-    "GOPROXY": "",
-    "GORACE": "",
-    "GOROOT": "/usr/local/go",
-    "GOTMPDIR": "",
-    "GOTOOLDIR": "/usr/local/go/pkg/tool/darwin_amd64",
-    "PKG_CONFIG": "pkg-config"
+    "GoVersion": "1.13"
   }
 }
 ```
@@ -149,7 +144,8 @@ $ here cmd/here
     "fmt",
     "github.com/gobuffalo/here",
     "log",
-    "os"
+    "os",
+    "os/exec"
   ],
   "Deps": [
     "bytes",
@@ -164,8 +160,10 @@ $ here cmd/here
     "internal/bytealg",
     "internal/cpu",
     "internal/fmtsort",
+    "internal/oserror",
     "internal/poll",
     "internal/race",
+    "internal/reflectlite",
     "internal/syscall/unix",
     "internal/testlog",
     "io",
@@ -176,6 +174,8 @@ $ here cmd/here
     "os/exec",
     "path/filepath",
     "reflect",
+    "regexp",
+    "regexp/syntax",
     "runtime",
     "runtime/internal/atomic",
     "runtime/internal/math",
@@ -199,35 +199,7 @@ $ here cmd/here
     "Main": true,
     "Dir": "$GOPATH/src/github.com/gobuffalo/here",
     "GoMod": "$GOPATH/src/github.com/gobuffalo/here/go.mod",
-    "GoVersion": "1.12"
-  },
-  "GoEnv": {
-    "CC": "clang",
-    "CGO_CFLAGS": "-g -O2",
-    "CGO_CPPFLAGS": "",
-    "CGO_CXXFLAGS": "-g -O2",
-    "CGO_ENABLED": "1",
-    "CGO_FFLAGS": "-g -O2",
-    "CGO_LDFLAGS": "-g -O2",
-    "CXX": "clang++",
-    "GCCGO": "gccgo",
-    "GOARCH": "amd64",
-    "GOBIN": "",
-    "GOCACHE": "$HOME/Library/Caches/go-build",
-    "GOEXE": "",
-    "GOFLAGS": "",
-    "GOGCCFLAGS": "-fPIC -m64 -pthread -fno-caret-diagnostics -Qunused-arguments -fmessage-length=0 -fdebug-prefix-map=/var/folders/zj/ktv0trrj4l79dfq0dkm1b6d40000gn/T/go-build976603462=/tmp/go-build -gno-record-gcc-switches -fno-common",
-    "GOHOSTARCH": "amd64",
-    "GOHOSTOS": "darwin",
-    "GOMOD": "$GOPATH/src/github.com/gobuffalo/here/go.mod",
-    "GOOS": "darwin",
-    "GOPATH": "$GOPATH",
-    "GOPROXY": "",
-    "GORACE": "",
-    "GOROOT": "/usr/local/go",
-    "GOTMPDIR": "",
-    "GOTOOLDIR": "/usr/local/go/pkg/tool/darwin_amd64",
-    "PKG_CONFIG": "pkg-config"
+    "GoVersion": "1.13"
   }
 }
 ```
@@ -238,12 +210,12 @@ $ here cmd/here
 $ here pkg github.com/gobuffalo/genny
 
 {
-  "Dir": "$GOPATH/pkg/mod/github.com/gobuffalo/genny@v0.2.0",
+  "Dir": "$GOPATH/pkg/mod/github.com/gobuffalo/genny@v0.4.1",
   "ImportPath": "github.com/gobuffalo/genny",
   "Name": "genny",
   "Doc": "Package genny is a _framework_ for writing modular generators, it however, doesn't actually generate anything.",
   "Target": "",
-  "Root": "",
+  "Root": "$GOPATH/pkg/mod/github.com/gobuffalo/genny@v0.4.1",
   "Match": [
     "github.com/gobuffalo/genny"
   ],
@@ -291,37 +263,9 @@ $ here pkg github.com/gobuffalo/genny
   "Module": {
     "Path": "github.com/gobuffalo/genny",
     "Main": false,
-    "Dir": "$GOPATH/pkg/mod/github.com/gobuffalo/genny@v0.2.0",
-    "GoMod": "$GOPATH/pkg/mod/cache/download/github.com/gobuffalo/genny/@v/v0.2.0.mod",
-    "GoVersion": ""
-  },
-  "GoEnv": {
-    "CC": "clang",
-    "CGO_CFLAGS": "-g -O2",
-    "CGO_CPPFLAGS": "",
-    "CGO_CXXFLAGS": "-g -O2",
-    "CGO_ENABLED": "1",
-    "CGO_FFLAGS": "-g -O2",
-    "CGO_LDFLAGS": "-g -O2",
-    "CXX": "clang++",
-    "GCCGO": "gccgo",
-    "GOARCH": "amd64",
-    "GOBIN": "",
-    "GOCACHE": "$HOME/Library/Caches/go-build",
-    "GOEXE": "",
-    "GOFLAGS": "",
-    "GOGCCFLAGS": "-fPIC -m64 -pthread -fno-caret-diagnostics -Qunused-arguments -fmessage-length=0 -fdebug-prefix-map=/var/folders/zj/ktv0trrj4l79dfq0dkm1b6d40000gn/T/go-build207410055=/tmp/go-build -gno-record-gcc-switches -fno-common",
-    "GOHOSTARCH": "amd64",
-    "GOHOSTOS": "darwin",
-    "GOMOD": "$GOPATH/src/github.com/gobuffalo/here/go.mod",
-    "GOOS": "darwin",
-    "GOPATH": "$GOPATH",
-    "GOPROXY": "",
-    "GORACE": "",
-    "GOROOT": "/usr/local/go",
-    "GOTMPDIR": "",
-    "GOTOOLDIR": "/usr/local/go/pkg/tool/darwin_amd64",
-    "PKG_CONFIG": "pkg-config"
+    "Dir": "$GOPATH/pkg/mod/github.com/gobuffalo/genny@v0.4.1",
+    "GoMod": "$GOPATH/pkg/mod/cache/download/github.com/gobuffalo/genny/@v/v0.4.1.mod",
+    "GoVersion": "1.13"
   }
 }
 ```
