@@ -1,13 +1,15 @@
 package here
 
-import "encoding/json"
+import (
+	"encoding/json"
+)
 
 type Module struct {
-	Path      string `json:"Path"`
-	Main      bool   `json:"Main"`
-	Dir       string `json:"Dir"`
-	GoMod     string `json:"GoMod"`
-	GoVersion string `json:"GoVersion"`
+	Path      string
+	Main      bool
+	Dir       string
+	GoMod     string
+	GoVersion string
 }
 
 func (i Module) String() string {
