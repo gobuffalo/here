@@ -27,11 +27,12 @@ func run(n string, args ...string) ([]byte, error) {
 	c := exec.Command(n, args...)
 
 	bb := &bytes.Buffer{}
+	ebb := &bytes.Buffer{}
 	c.Stdout = bb
-	c.Stderr = bb
+	c.Stderr = ebb
 	err := c.Run()
 	if err != nil {
-		return nil, fmt.Errorf("%w: %s", err, bb)
+		return nil, fmt.Errorf("%w: %s", err, ebb)
 	}
 
 	return bb.Bytes(), nil
