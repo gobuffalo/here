@@ -19,6 +19,7 @@ func Test_nonGoDirRx(t *testing.T) {
 		"go: ",
 		"build .:",
 		"no Go files",
+		"can't load package",
 	}
 
 	for _, tt := range table {

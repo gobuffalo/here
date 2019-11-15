@@ -57,6 +57,11 @@ func (h Here) Dir(p string) (Info, error) {
 	})
 }
 
+// Dir attempts to gather info for the requested directory.
+func Dir(p string) (Info, error) {
+	return New().Dir(p)
+}
+
 func fromNonGoDir(dir string) (Info, error) {
 	i := Info{
 		Dir:  dir,

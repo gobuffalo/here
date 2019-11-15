@@ -24,3 +24,7 @@ func (h Here) Current() (Info, error) {
 
 	return h.current, h.curErr
 }
+
+func Current() (Info, error) {
+	return New().Current()
+}

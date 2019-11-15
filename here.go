@@ -51,4 +51,4 @@ func (h Here) cache(p string, fn func(string) (Info, error)) (Info, error) {
 	return i, nil
 }
 
-var nonGoDirRx = regexp.MustCompile(`cannot find main|go help modules|go: |build .:|no Go files`)
+var nonGoDirRx = regexp.MustCompile(`cannot find main|go help modules|go: |build .:|no Go files|can't load package`)
