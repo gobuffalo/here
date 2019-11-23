@@ -1,5 +1,6 @@
 # Here
 
+[![](https://github.com/gobuffalo/here/workflows/Tests/badge.svg)](https://github.com/gobuffalo/here/actions)
 [![GoDoc](https://godoc.org/github.com/gobuffalo/here?status.svg)](https://godoc.org/github.com/gobuffalo/here)
 
 Here will get you **accurate** Go information about the directory of package requested.

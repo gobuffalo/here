@@ -2,7 +2,6 @@ package here
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
 	"path/filepath"
 )
@@ -38,7 +37,7 @@ func (h Here) Dir(p string) (Info, error) {
 			if nonGoDirRx.MatchString(err.Error()) {
 				return fromNonGoDir(p)
 			}
-			return i, fmt.Errorf("%w %s", err, p)
+			return i, err
 		}
 
 		if err := json.Unmarshal(b, &i); err != nil {

@@ -1,4 +1,4 @@
 package here
 
 // Version of here
-const Version = "v0.4.2"
+var Version = "development"
