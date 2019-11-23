@@ -32,7 +32,7 @@ func run(n string, args ...string) ([]byte, error) {
 	c.Stderr = ebb
 	err := c.Run()
 	if err != nil {
-		return nil, fmt.Errorf("%w: %s", err, ebb)
+		return nil, fmt.Errorf("%s: %s", err, ebb)
 	}
 
 	return bb.Bytes(), nil
