@@ -6,7 +6,7 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/gobuffalo/here"
+	"github.com/gobuffalo/here/there"
 )
 
 func main() {
@@ -21,12 +21,10 @@ func main() {
 		args = append(args, pwd)
 	}
 
-	h := here.New()
-
-	fn := h.Dir
+	fn := there.Dir
 	switch args[0] {
 	case "pkg":
-		fn = h.Package
+		fn = there.Package
 		args = args[1:]
 		if len(args) == 0 {
 			log.Fatalf("you must pass at least one package name")
