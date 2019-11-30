@@ -69,6 +69,9 @@ func fromNonGoDir(dir string) (Info, error) {
 
 	b, err := run("go", "list", "-json", "-m")
 	if err != nil {
+		if nonGoDirRx.MatchString(err.Error()) {
+			return i, nil
+		}
 		return i, err
 	}
 
