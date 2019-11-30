@@ -15,6 +15,9 @@ type Here struct {
 	current Info
 }
 
+// New returns a Here type that will cache
+// all results. This speeds up repeated calls,
+// and can be useful for testing.
 func New() Here {
 	return Here{
 		infos: &infoMap{
