@@ -15,10 +15,10 @@ func Test_Package(t *testing.T) {
 	r.NoError(err)
 	sanityCheck(t, info)
 
-	info, err = h.Package("github.com/gobuffalo/buffalo")
+	info, err = h.Package("github.com/stretchr/testify")
 	r.NoError(err)
 	r.NotZero(info)
-	r.Equal("github.com/gobuffalo/buffalo", info.ImportPath)
+	r.Equal("github.com/stretchr/testify", info.ImportPath)
 
 	_, err = h.Package("")
 	r.Error(err)
