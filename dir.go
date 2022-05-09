@@ -80,5 +80,9 @@ func fromNonGoDir(dir string) (Info, error) {
 		return i, fmt.Errorf("here.nonGoDir: %s: %w", dir, err)
 	}
 
+	if i.ImportPath == "" && i.Module.Path != "command-line-arguments" {
+		i.ImportPath = i.Module.Path
+	}
+
 	return i, nil
 }
