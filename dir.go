@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
+	"strings"
 )
 
 // Dir attempts to gather info for the requested directory.
@@ -76,8 +78,25 @@ func fromNonGoDir(dir string) (Info, error) {
 		return i, fmt.Errorf("here.nonGoDir: %s: %w", dir, err)
 	}
 
-	if err := json.Unmarshal(b, &i.Module); err != nil {
+	// When workspaces used, go list returns multiple objects separated by new line
+	// Solution is to treat is as an array
+	b = append(append([]byte{'['}, b...), ']')
+
+	rx := regexp.MustCompile("\\}(\r)?\n\\{")
+	if rx.Match(b) {
+		b = rx.ReplaceAll(b, []byte("},{"))
+	}
+
+	var Modules []Module
+	if err := json.Unmarshal(b, &Modules); err != nil {
 		return i, fmt.Errorf("here.nonGoDir: %s: %w", dir, err)
+	}
+
+	// Select current module by dir
+	for _, module := range Modules {
+		if strings.HasPrefix(dir, module.Dir) {
+			i.Module = module
+		}
 	}
 
 	if i.ImportPath == "" && i.Module.Path != "command-line-arguments" {
